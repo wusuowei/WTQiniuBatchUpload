@@ -25,8 +25,7 @@ extern const UInt32 kQNBlockSize;
 typedef NSString *(^QNUrlConvert)(NSString *url);
 
 @class QNConfigurationBuilder;
-@class QNDnsManager;
-@class QNServiceAddress;
+
 /**
  *    Builder block
  *
@@ -40,12 +39,22 @@ typedef void (^QNConfigurationBuilderBlock)(QNConfigurationBuilder *builder);
 /**
  *    默认上传服务器地址
  */
-@property (copy, nonatomic, readonly) QNServiceAddress *up;
+@property (copy, nonatomic, readonly) NSString *upHost;
 
 /**
  *    备用上传服务器地址
  */
-@property (copy, nonatomic, readonly) QNServiceAddress *upBackup;
+@property (copy, nonatomic, readonly) NSString *upHostBackup;
+
+/**
+ *    备用上传IP
+ */
+@property (copy, nonatomic, readonly) NSString *upIp;
+
+/**
+ *    上传端口
+ */
+@property (nonatomic, readonly) UInt32 upPort;
 
 /**
  *    断点上传时的分片大小
@@ -75,40 +84,27 @@ typedef void (^QNConfigurationBuilderBlock)(QNConfigurationBuilder *builder);
 
 @property (nonatomic, readonly) QNUrlConvert converter;
 
-@property (nonatomic, readonly) QNDnsManager *dns;
-
-@property (readonly) BOOL disableATS;
-
-@property (readonly) float upStatsDropRate;
-
 + (instancetype)build:(QNConfigurationBuilderBlock)block;
 
 @end
 
-/**
- * 上传服务地址
- */
-@interface QNServiceAddress : NSObject
-
-- (instancetype) init:(NSString*)address ips:(NSArray*)ips;
-
-@property (nonatomic, readonly) NSString* address;
-@property (nonatomic, readonly) NSArray* ips;
-
-@end
 
 @interface QNZone : NSObject
 
 /**
  *    默认上传服务器地址
  */
-@property (nonatomic, readonly) QNServiceAddress *up;
+@property (nonatomic, readonly) NSString *upHost;
 
 /**
  *    备用上传服务器地址
  */
-@property (nonatomic, readonly) QNServiceAddress *upBackup;
+@property (nonatomic, readonly) NSString *upHostBackup;
 
+/**
+ *    备用上传IP
+ */
+@property (nonatomic, readonly) NSString *upIp;
 
 /**
  *    Zone初始化方法
@@ -119,8 +115,9 @@ typedef void (^QNConfigurationBuilderBlock)(QNConfigurationBuilder *builder);
  *
  *    @return Zone实例
  */
-- (instancetype)initWithUp:(QNServiceAddress *)up
-                  upBackup:(QNServiceAddress *)upBackup;
+- (instancetype)initWithUpHost:(NSString *)upHost
+                  upHostBackup:(NSString *)upHostBackup
+                          upIp:(NSString *)upIp;
 
 /**
  *    zone 0
@@ -138,13 +135,17 @@ typedef void (^QNConfigurationBuilderBlock)(QNConfigurationBuilder *builder);
 
 @end
 
-
 @interface QNConfigurationBuilder : NSObject
 
 /**
  *    默认上传服务器地址
  */
 @property (nonatomic, strong) QNZone *zone;
+
+/**
+ *    上传端口
+ */
+@property (nonatomic, readonly) UInt32 upPort;
 
 /**
  *    断点上传时的分片大小
@@ -173,17 +174,5 @@ typedef void (^QNConfigurationBuilderBlock)(QNConfigurationBuilder *builder);
 @property (nonatomic, assign)  NSDictionary *proxy;
 
 @property (nonatomic, assign) QNUrlConvert converter;
-
-@property (nonatomic, assign) QNDnsManager *dns;
-
-@property (assign) BOOL disableATS;
-
-@property (assign) BOOL enableBackgroundUpload;
-
-@property (nonatomic, assign) NSString* sharedContainerIdentifier;
-/**
- *   上传统计随机上传的概率，1为全部上传，0为不上传，0.5为随机上传一半。默认0.3
- */
-@property (nonatomic, assign) float upStatsRate;
 
 @end

@@ -15,12 +15,12 @@
 #import "QNUploadOption+Private.h"
 #import "QNRecorderDelegate.h"
 #import "QNCrc32.h"
-#import "QNStats.h"
 
 typedef void (^task)(void);
 
 @interface QNResumeUpload ()
 
+@property (nonatomic, strong) NSData *data;
 @property (nonatomic, strong) id <QNHttpDelegate> httpManager;
 @property UInt32 size;
 @property (nonatomic) int retryTimes;
@@ -32,8 +32,6 @@ typedef void (^task)(void);
 @property (nonatomic, strong) QNUpCompletionHandler complete;
 @property (nonatomic, strong) NSMutableArray *contexts;
 
-@property (nonatomic, strong) NSMutableDictionary *stats;
-
 @property int64_t modifyTime;
 @property (nonatomic, strong) id <QNRecorderDelegate> recorder;
 
@@ -41,7 +39,7 @@ typedef void (^task)(void);
 
 @property UInt32 chunkCrc;
 
-@property (nonatomic, strong) id <QNFileDelegate> file;
+@property BOOL forceIp;
 
 - (void)makeBlock:(NSString *)uphost
            offset:(UInt32)offset
@@ -64,36 +62,36 @@ typedef void (^task)(void);
 
 @implementation QNResumeUpload
 
-- (instancetype) initWithFile:(id <QNFileDelegate> )file
-                      withKey:(NSString *)key
-                    withToken:(QNUpToken *)token
-        withCompletionHandler:(QNUpCompletionHandler)block
-                   withOption:(QNUploadOption *)option
-                 withRecorder:(id <QNRecorderDelegate> )recorder
-              withRecorderKey:(NSString *)recorderKey
-              withHttpManager:(id <QNHttpDelegate> )http
-            withConfiguration:(QNConfiguration *)config;
-{
+- (instancetype)initWithData:(NSData *)data
+                    withSize:(UInt32)size
+                     withKey:(NSString *)key
+                   withToken:(QNUpToken *)token
+       withCompletionHandler:(QNUpCompletionHandler)block
+                  withOption:(QNUploadOption *)option
+              withModifyTime:(NSDate *)time
+                withRecorder:(id <QNRecorderDelegate> )recorder
+             withRecorderKey:(NSString *)recorderKey
+             withHttpManager:(id <QNHttpDelegate> )http
+           withConfiguration:(QNConfiguration *)config {
 	if (self = [super init]) {
-		_file = file;
-		_size = (UInt32)[file size];
+		_data = data;
+		_size = size;
 		_key = key;
-		NSString *tokenUp = [NSString stringWithFormat:@"UpToken %@", token.token];
-		_option = option != nil ? option :[QNUploadOption defaultOptions];
+		NSString *tok = [NSString stringWithFormat:@"UpToken %@", token.token];
+		_option = option != nil ? option : [QNUploadOption defaultOptions];
 		_complete = block;
-		_headers = @{ @"Authorization":tokenUp, @"Content-Type":@"application/octet-stream" };
+		_headers = @{ @"Authorization":tok, @"Content-Type":@"application/octet-stream" };
 		_recorder = recorder;
 		_httpManager = http;
-		_modifyTime = [file modifyTime];
+		if (time != nil) {
+			_modifyTime = [time timeIntervalSince1970];
+		}
 		_recorderKey = recorderKey;
-		_contexts = [[NSMutableArray alloc] initWithCapacity:(_size + kQNBlockSize - 1) / kQNBlockSize];
+		_contexts = [[NSMutableArray alloc] initWithCapacity:(size + kQNBlockSize - 1) / kQNBlockSize];
 		_config = config;
 
 		_token = token;
-
-		_stats = [[NSMutableDictionary alloc] init];
-		setStat(_stats, @"ak", token.access);
-		setStat(_stats, @"bucket", token.bucket);
+		_forceIp = NO;
 	}
 	return self;
 }
@@ -219,7 +217,11 @@ typedef void (^task)(void);
 
 			NSString *nextHost = host;
 			if (info.isConnectionBroken || info.needSwitchServer) {
-				nextHost = _config.upBackup.address;
+				nextHost = _config.upHostBackup;
+			}
+
+			if (info.isNotQiniu) {
+				_forceIp = YES;
 			}
 
 			[self nextTask:offset retriedTimes:retried + 1 host:nextHost];
@@ -266,10 +268,10 @@ typedef void (^task)(void);
         chunkSize:(UInt32)chunkSize
          progress:(QNInternalProgressBlock)progressBlock
          complete:(QNCompleteBlock)complete {
-	NSData *data = [self.file read:offset size:chunkSize];
-	NSString *url = [[NSString alloc] initWithFormat:@"%@/mkblk/%u", uphost, (unsigned int)blockSize];
+	NSData *data = [self.data subdataWithRange:NSMakeRange(offset, (unsigned int)chunkSize)];
+	NSString *url = [[NSString alloc] initWithFormat:@"http://%@:%u/mkblk/%u", uphost, (unsigned int)_config.upPort, (unsigned int)blockSize];
 	_chunkCrc = [QNCrc32 data:data];
-	[self post:url withData:data withStats:[NSMutableDictionary dictionaryWithDictionary:_stats] withCompleteBlock:complete withProgressBlock:progressBlock];
+	[self post:url withData:data withCompleteBlock:complete withProgressBlock:progressBlock];
 }
 
 - (void)putChunk:(NSString *)uphost
@@ -278,18 +280,18 @@ typedef void (^task)(void);
          context:(NSString *)context
         progress:(QNInternalProgressBlock)progressBlock
         complete:(QNCompleteBlock)complete {
-	NSData *data = [self.file read:offset size:size];
+	NSData *data = [self.data subdataWithRange:NSMakeRange(offset, (unsigned int)size)];
 	UInt32 chunkOffset = offset % kQNBlockSize;
-	NSString *url = [[NSString alloc] initWithFormat:@"%@/bput/%@/%u", uphost, context, (unsigned int)chunkOffset];
+	NSString *url = [[NSString alloc] initWithFormat:@"http://%@:%u/bput/%@/%u", uphost, (unsigned int)_config.upPort, context, (unsigned int)chunkOffset];
 	_chunkCrc = [QNCrc32 data:data];
-	[self post:url withData:data withStats:[NSMutableDictionary dictionaryWithDictionary:_stats] withCompleteBlock:complete withProgressBlock:progressBlock];
+	[self post:url withData:data withCompleteBlock:complete withProgressBlock:progressBlock];
 }
 
 - (void)makeFile:(NSString *)uphost
         complete:(QNCompleteBlock)complete {
 	NSString *mime = [[NSString alloc] initWithFormat:@"/mimeType/%@", [QNUrlSafeBase64 encodeString:self.option.mimeType]];
 
-	__block NSString *url = [[NSString alloc] initWithFormat:@"%@/mkfile/%u%@", uphost,(unsigned int)self.size, mime];
+	__block NSString *url = [[NSString alloc] initWithFormat:@"http://%@:%u/mkfile/%u%@", uphost, (unsigned int)_config.upPort, (unsigned int)self.size, mime];
 
 	if (self.key != nil) {
 		NSString *keyStr = [[NSString alloc] initWithFormat:@"/key/%@", [QNUrlSafeBase64 encodeString:self.key]];
@@ -297,28 +299,28 @@ typedef void (^task)(void);
 	}
 
 	[self.option.params enumerateKeysAndObjectsUsingBlock: ^(NSString *key, NSString *obj, BOOL *stop) {
-	         url = [NSString stringWithFormat:@"%@/%@/%@", url, key, [QNUrlSafeBase64 encodeString:obj]];
-	 }];
+	    url = [NSString stringWithFormat:@"%@/%@/%@", url, key, [QNUrlSafeBase64 encodeString:obj]];
+	}];
 
 
 	NSMutableData *postData = [NSMutableData data];
 	NSString *bodyStr = [self.contexts componentsJoinedByString:@","];
 	[postData appendData:[bodyStr dataUsingEncoding:NSUTF8StringEncoding]];
-	[self post:url withData:postData withStats:[NSMutableDictionary dictionaryWithDictionary:_stats] withCompleteBlock:complete withProgressBlock:nil];
+	[self post:url withData:postData withCompleteBlock:complete withProgressBlock:nil];
 }
 
-- (void)             post:(NSString *)url
-                 withData:(NSData *)data
-                withStats:(NSMutableDictionary *)stats
-        withCompleteBlock:(QNCompleteBlock)completeBlock
-        withProgressBlock:(QNInternalProgressBlock)progressBlock {
-	[_httpManager post:url withData:data withParams:nil withHeaders:_headers withStats:stats withCompleteBlock:completeBlock withProgressBlock:progressBlock withCancelBlock:_option.cancellationSignal];
+- (void)         post:(NSString *)url
+             withData:(NSData *)data
+    withCompleteBlock:(QNCompleteBlock)completeBlock
+    withProgressBlock:(QNInternalProgressBlock)progressBlock {
+	[_httpManager post:url withData:data withParams:nil withHeaders:_headers withCompleteBlock:completeBlock withProgressBlock:progressBlock withCancelBlock:_option.cancellationSignal
+	           forceIp:_forceIp];
 }
 
 - (void)run {
 	@autoreleasepool {
 		UInt32 offset = [self recoveryFromRecord];
-		[self nextTask:offset retriedTimes:0 host:_config.up.address];
+		[self nextTask:offset retriedTimes:0 host:_config.upHost];
 	}
 }
 

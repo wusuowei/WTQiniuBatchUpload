@@ -9,11 +9,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>HappyDNS.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>Pods-TestForQiNiuUpload.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -32,17 +27,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>55E332C758A0AF3C76582AE8AB6EFAE6</key>
+		<key>46BBEB5ABDC94BDBB0FE30376F98D0A9</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>6627E2CE58504A680DE862D5526B302C</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>6DC527ED90CDAF707B78108ECB023919</key>
+		<key>9033A7DBA30551475F156D52242BC9DC</key>
 		<dict>
 			<key>primary</key>
 			<true/>

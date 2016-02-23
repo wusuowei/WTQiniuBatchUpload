@@ -1,1 +1,1 @@
-../../../Qiniu/QiniuSDK/Http/QNHttpDelegate.h
+../../../Qiniu/QiniuSDK/Http/QNhttpDelegate.h
