@@ -22,10 +22,11 @@ extern const UInt32 kQNBlockSize;
  *
  *    @return 根据上传url算出代理url
  */
-typedef NSString *(^QNUrlConvert)(NSString *url);
+typedef NSString * (^QNUrlConvert)(NSString *url);
 
 @class QNConfigurationBuilder;
-
+@class QNDnsManager;
+@class QNServiceAddress;
 /**
  *    Builder block
  *
@@ -33,28 +34,17 @@ typedef NSString *(^QNUrlConvert)(NSString *url);
  */
 typedef void (^QNConfigurationBuilderBlock)(QNConfigurationBuilder *builder);
 
-
 @interface QNConfiguration : NSObject
 
 /**
  *    默认上传服务器地址
  */
-@property (copy, nonatomic, readonly) NSString *upHost;
+@property (copy, nonatomic, readonly) QNServiceAddress *up;
 
 /**
  *    备用上传服务器地址
  */
-@property (copy, nonatomic, readonly) NSString *upHostBackup;
-
-/**
- *    备用上传IP
- */
-@property (copy, nonatomic, readonly) NSString *upIp;
-
-/**
- *    上传端口
- */
-@property (nonatomic, readonly) UInt32 upPort;
+@property (copy, nonatomic, readonly) QNServiceAddress *upBackup;
 
 /**
  *    断点上传时的分片大小
@@ -76,35 +66,45 @@ typedef void (^QNConfigurationBuilderBlock)(QNConfigurationBuilder *builder);
  */
 @property (readonly) UInt32 timeoutInterval;
 
-@property (nonatomic, readonly) id <QNRecorderDelegate> recorder;
+@property (nonatomic, readonly) id<QNRecorderDelegate> recorder;
 
 @property (nonatomic, readonly) QNRecorderKeyGenerator recorderKeyGen;
 
-@property (nonatomic, readonly)  NSDictionary *proxy;
+@property (nonatomic, readonly) NSDictionary *proxy;
 
 @property (nonatomic, readonly) QNUrlConvert converter;
+
+@property (nonatomic, readonly) QNDnsManager *dns;
+
+@property (readonly) BOOL disableATS;
 
 + (instancetype)build:(QNConfigurationBuilderBlock)block;
 
 @end
 
+/**
+ * 上传服务地址
+ */
+@interface QNServiceAddress : NSObject
+
+- (instancetype)init:(NSString *)address ips:(NSArray *)ips;
+
+@property (nonatomic, readonly) NSString *address;
+@property (nonatomic, readonly) NSArray *ips;
+
+@end
 
 @interface QNZone : NSObject
 
 /**
  *    默认上传服务器地址
  */
-@property (nonatomic, readonly) NSString *upHost;
+@property (nonatomic, readonly) QNServiceAddress *up;
 
 /**
  *    备用上传服务器地址
  */
-@property (nonatomic, readonly) NSString *upHostBackup;
-
-/**
- *    备用上传IP
- */
-@property (nonatomic, readonly) NSString *upIp;
+@property (nonatomic, readonly) QNServiceAddress *upBackup;
 
 /**
  *    Zone初始化方法
@@ -115,9 +115,8 @@ typedef void (^QNConfigurationBuilderBlock)(QNConfigurationBuilder *builder);
  *
  *    @return Zone实例
  */
-- (instancetype)initWithUpHost:(NSString *)upHost
-                  upHostBackup:(NSString *)upHostBackup
-                          upIp:(NSString *)upIp;
+- (instancetype)initWithUp:(QNServiceAddress *)up
+                  upBackup:(QNServiceAddress *)upBackup;
 
 /**
  *    zone 0
@@ -143,11 +142,6 @@ typedef void (^QNConfigurationBuilderBlock)(QNConfigurationBuilder *builder);
 @property (nonatomic, strong) QNZone *zone;
 
 /**
- *    上传端口
- */
-@property (nonatomic, readonly) UInt32 upPort;
-
-/**
  *    断点上传时的分片大小
  */
 @property (assign) UInt32 chunkSize;
@@ -167,12 +161,16 @@ typedef void (^QNConfigurationBuilderBlock)(QNConfigurationBuilder *builder);
  */
 @property (assign) UInt32 timeoutInterval;
 
-@property (nonatomic, assign) id <QNRecorderDelegate> recorder;
+@property (nonatomic, strong) id<QNRecorderDelegate> recorder;
 
-@property (nonatomic, assign) QNRecorderKeyGenerator recorderKeyGen;
+@property (nonatomic, strong) QNRecorderKeyGenerator recorderKeyGen;
 
-@property (nonatomic, assign)  NSDictionary *proxy;
+@property (nonatomic, strong) NSDictionary *proxy;
 
-@property (nonatomic, assign) QNUrlConvert converter;
+@property (nonatomic, strong) QNUrlConvert converter;
+
+@property (nonatomic, strong) QNDnsManager *dns;
+
+@property (assign) BOOL disableATS;
 
 @end

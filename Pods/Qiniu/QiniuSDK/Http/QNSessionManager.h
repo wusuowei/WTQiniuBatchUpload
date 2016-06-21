@@ -1,5 +1,5 @@
-#import <Foundation/Foundation.h>
 #import "QNHttpDelegate.h"
+#import <Foundation/Foundation.h>
 
 #import "QNConfiguration.h"
 
@@ -10,7 +10,7 @@
 - (instancetype)initWithProxy:(NSDictionary *)proxyDict
                       timeout:(UInt32)timeout
                  urlConverter:(QNUrlConvert)converter
-                     backupIp:(NSString *)ip;
+                          dns:(QNDnsManager *)dns;
 
 - (void)multipartPost:(NSString *)url
              withData:(NSData *)data
@@ -19,17 +19,15 @@
          withMimeType:(NSString *)mime
     withCompleteBlock:(QNCompleteBlock)completeBlock
     withProgressBlock:(QNInternalProgressBlock)progressBlock
-      withCancelBlock:(QNCancelBlock)cancelBlock
-              forceIp:(BOOL)forceIp;
+      withCancelBlock:(QNCancelBlock)cancelBlock;
 
-- (void)         post:(NSString *)url
+- (void)post:(NSString *)url
              withData:(NSData *)data
            withParams:(NSDictionary *)params
           withHeaders:(NSDictionary *)headers
     withCompleteBlock:(QNCompleteBlock)completeBlock
     withProgressBlock:(QNInternalProgressBlock)progressBlock
-      withCancelBlock:(QNCancelBlock)cancelBlock
-              forceIp:(BOOL)forceIp;
+      withCancelBlock:(QNCancelBlock)cancelBlock;
 
 @end
 

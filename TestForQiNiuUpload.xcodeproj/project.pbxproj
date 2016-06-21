@@ -16,6 +16,8 @@
 		5BC47F7F1C7C13C600843343 /* TestForQiNiuUploadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BC47F7E1C7C13C600843343 /* TestForQiNiuUploadTests.m */; };
 		5BC47F8A1C7C13C600843343 /* TestForQiNiuUploadUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BC47F891C7C13C600843343 /* TestForQiNiuUploadUITests.m */; };
 		9DF055AAC4BC20B52E8C5F04 /* libPods-TestForQiNiuUpload.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A4F22C5E83A08287135AC9E /* libPods-TestForQiNiuUpload.a */; };
+		C58D04331D12992F00D7681D /* QQhaoyou.png in Resources */ = {isa = PBXBuildFile; fileRef = C58D04321D12992F00D7681D /* QQhaoyou.png */; };
+		C58D04351D129C0800D7681D /* abc.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C58D04341D129C0800D7681D /* abc.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +56,8 @@
 		5BC47F851C7C13C600843343 /* TestForQiNiuUploadUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestForQiNiuUploadUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BC47F891C7C13C600843343 /* TestForQiNiuUploadUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestForQiNiuUploadUITests.m; sourceTree = "<group>"; };
 		5BC47F8B1C7C13C600843343 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C58D04321D12992F00D7681D /* QQhaoyou.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = QQhaoyou.png; sourceTree = "<group>"; };
+		C58D04341D129C0800D7681D /* abc.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = abc.jpg; sourceTree = "<group>"; };
 		F3859706D7D4314219DBE003 /* Pods-TestForQiNiuUpload.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestForQiNiuUpload.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TestForQiNiuUpload/Pods-TestForQiNiuUpload.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -133,6 +137,8 @@
 		5BC47F641C7C13C600843343 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C58D04341D129C0800D7681D /* abc.jpg */,
+				C58D04321D12992F00D7681D /* QQhaoyou.png */,
 				5BC47F651C7C13C600843343 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -272,6 +278,8 @@
 			files = (
 				5BC47F741C7C13C600843343 /* LaunchScreen.storyboard in Resources */,
 				5BC47F711C7C13C600843343 /* Assets.xcassets in Resources */,
+				C58D04331D12992F00D7681D /* QQhaoyou.png in Resources */,
+				C58D04351D129C0800D7681D /* abc.jpg in Resources */,
 				5BC47F6F1C7C13C600843343 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
