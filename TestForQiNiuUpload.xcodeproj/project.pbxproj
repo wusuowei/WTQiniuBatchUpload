@@ -18,6 +18,7 @@
 		9DF055AAC4BC20B52E8C5F04 /* libPods-TestForQiNiuUpload.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A4F22C5E83A08287135AC9E /* libPods-TestForQiNiuUpload.a */; };
 		C58D04331D12992F00D7681D /* QQhaoyou.png in Resources */ = {isa = PBXBuildFile; fileRef = C58D04321D12992F00D7681D /* QQhaoyou.png */; };
 		C58D04351D129C0800D7681D /* abc.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C58D04341D129C0800D7681D /* abc.jpg */; };
+		C5EB36C41D1A2B6000016F62 /* WTOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C5EB36C31D1A2B6000016F62 /* WTOperation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,8 @@
 		5BC47F8B1C7C13C600843343 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C58D04321D12992F00D7681D /* QQhaoyou.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = QQhaoyou.png; sourceTree = "<group>"; };
 		C58D04341D129C0800D7681D /* abc.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = abc.jpg; sourceTree = "<group>"; };
+		C5EB36C21D1A2B6000016F62 /* WTOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WTOperation.h; sourceTree = "<group>"; };
+		C5EB36C31D1A2B6000016F62 /* WTOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WTOperation.m; sourceTree = "<group>"; };
 		F3859706D7D4314219DBE003 /* Pods-TestForQiNiuUpload.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestForQiNiuUpload.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TestForQiNiuUpload/Pods-TestForQiNiuUpload.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -125,6 +128,8 @@
 				5BC47F681C7C13C600843343 /* AppDelegate.m */,
 				5BC47F6A1C7C13C600843343 /* ViewController.h */,
 				5BC47F6B1C7C13C600843343 /* ViewController.m */,
+				C5EB36C21D1A2B6000016F62 /* WTOperation.h */,
+				C5EB36C31D1A2B6000016F62 /* WTOperation.m */,
 				5BC47F6D1C7C13C600843343 /* Main.storyboard */,
 				5BC47F701C7C13C600843343 /* Assets.xcassets */,
 				5BC47F721C7C13C600843343 /* LaunchScreen.storyboard */,
@@ -353,6 +358,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5EB36C41D1A2B6000016F62 /* WTOperation.m in Sources */,
 				5BC47F6C1C7C13C600843343 /* ViewController.m in Sources */,
 				5BC47F691C7C13C600843343 /* AppDelegate.m in Sources */,
 				5BC47F661C7C13C600843343 /* main.m in Sources */,
