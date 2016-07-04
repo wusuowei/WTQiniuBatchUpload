@@ -9,17 +9,16 @@
 #import "ViewController.h"
 #import <QiniuSDK.h>
 #import <AFNetworking.h>
+#import "WTOperation.h"
 
 @interface ViewController ()
 
 @property (nonatomic, strong) QNUploadManager *uploadManager;
+@property (nonatomic, strong) NSOperationQueue *uploadOperationQueue;
+
 @property (nonatomic, strong) AFHTTPSessionManager *httpManager;
 @property (nonatomic, strong) AFURLSessionManager *sessionManager;
-@property (nonatomic, strong) NSURLSessionUploadTask *uploadTask;
-
 @property (nonatomic, copy) NSMutableArray *uploadTasks;
-
-@property (nonatomic, strong) NSProgress *progress;
 
 @end
 
@@ -27,33 +26,50 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self setupQiniuUpload];
+    self.httpManager = [AFHTTPSessionManager manager];
+    self.sessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:nil];
+}
+
+- (void)setupQiniuUpload {
     QNConfiguration *configuration = [QNConfiguration build:^(QNConfigurationBuilder *builder) {
         builder.timeoutInterval = 10;
     }];
     self.uploadManager = [QNUploadManager sharedInstanceWithConfiguration:configuration];
-    self.httpManager = [AFHTTPSessionManager manager];
-    self.sessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:nil];
+    self.uploadOperationQueue = [[NSOperationQueue alloc] init];
+    self.uploadOperationQueue.maxConcurrentOperationCount = 3;
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self qiniuUpload];
 }
 
+#pragma mark - qiniu
 - (void)qiniuUpload {
+    NSLog(@"%zd", self.uploadOperationQueue.operationCount);
+    if (self.uploadOperationQueue.operationCount > 0) {
+        [self.uploadOperationQueue cancelAllOperations];
+        return;
+    }
     NSString *path = [[NSBundle mainBundle] pathForResource:@"abc" ofType:@"jpg"];
     NSString *key = @"123456.jpg";
-    NSString *token = @"1AXRtAuXagE1dTL3onHnV9vP262l7ZD-J8VjZd0W:rRD_voTbA6ZysZK0b8TggX-9WCw=:eyJzY29wZSI6InByb2QtbWVkaWNhbC1wcml2YXRlLWNvbW1vbiIsImRlYWRsaW5lIjoxNDY2NDk0NzE0LCJjYWxsYmFja1VybCI6Imh0dHA6Ly9tZWRjaGFydC54aW5nc2h1bGluLmNvbS9jYXNlZm9sZGVyLW1lZGljYWwvcWluaXVDYWxsYmFjayIsImNhbGxiYWNrQm9keSI6Im5hbWU9JChrZXkpXHUwMDI2aGFzaD0kKGV0YWcpIn0=";
+    NSString *token = [self token];
     for (NSInteger i = 0; i < 100; i++) {
-        [self.uploadManager putFile:path key:key token:token complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
-            if (resp == nil) {
-                NSLog(@"----------失败   %@", info.error.description);
-            } else {
-                NSLog(@"---------成功");
-            }
-        } option:nil];
+        WTOperation *operation = [WTOperation operationWithUploadManager:self.uploadManager filePath:path key:key token:token success:^{
+//            NSLog(@"---------成功");
+        } failure:^(NSError *error) {
+//            NSLog(@"----------失败   %@", error.description);
+        }];
+        [self.uploadOperationQueue addOperation:operation];
     }
 }
 
+- (NSString *)token {
+    return @"a0h5P_uSX_opuu0veh0W3gBYxunaVmIjpgQur9BM:VPCqeNsYV0saNAHSslys7WoB0lY=:eyJzY29wZSI6InFhLW1lZGljYWwtcHJpdmF0ZS1jb21tb24iLCJkZWFkbGluZSI6MTQ2NzM2MTY0M30=";
+}
+
+#pragma mark - custom
 - (void)beginUpload {
     NSMutableArray *uploadTasks = [NSMutableArray array];
     NSString *path = [[NSBundle mainBundle] pathForResource:@"abc" ofType:@"jpg"];
