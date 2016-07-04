@@ -47,19 +47,18 @@
 
 #pragma mark - qiniu
 - (void)qiniuUpload {
-    NSLog(@"%zd", self.uploadOperationQueue.operationCount);
+    NSLog(@"operationCount-----%zd", self.uploadOperationQueue.operationCount);
     if (self.uploadOperationQueue.operationCount > 0) {
         [self.uploadOperationQueue cancelAllOperations];
-        return;
     }
     NSString *path = [[NSBundle mainBundle] pathForResource:@"abc" ofType:@"jpg"];
     NSString *key = @"123456.jpg";
     NSString *token = [self token];
     for (NSInteger i = 0; i < 100; i++) {
         WTOperation *operation = [WTOperation operationWithUploadManager:self.uploadManager filePath:path key:key token:token success:^{
-//            NSLog(@"---------成功");
+            NSLog(@"---------成功");
         } failure:^(NSError *error) {
-//            NSLog(@"----------失败   %@", error.description);
+            NSLog(@"----------失败   %@", error.description);
         }];
         [self.uploadOperationQueue addOperation:operation];
     }

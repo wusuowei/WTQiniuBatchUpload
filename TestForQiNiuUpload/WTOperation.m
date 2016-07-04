@@ -10,64 +10,6 @@
 #import <QiniuSDK.h>
 
 NSString * const WTOperationLockName = @"WTOperationLockName";
-//typedef NS_ENUM(NSInteger, WTOperationState) {
-//    WTOperationStateReady       = 1,
-//    WTOperationStateExecuting   = 2,
-//    WTOperationStateFinished    = 3,
-//};
-//
-//static inline NSString * AFKeyPathFromOperationState(WTOperationState state) {
-//    switch (state) {
-//        case WTOperationStateReady:
-//            return @"isReady";
-//        case WTOperationStateExecuting:
-//            return @"isExecuting";
-//        case WTOperationStateFinished:
-//            return @"isFinished";
-//        default: {
-//#pragma clang diagnostic push
-//#pragma clang diagnostic ignored "-Wunreachable-code"
-//            return @"state";
-//#pragma clang diagnostic pop
-//        }
-//    }
-//}
-//
-//static inline BOOL AFStateTransitionIsValid(WTOperationState fromState, WTOperationState toState, BOOL isCancelled) {
-//    switch (fromState) {
-//        case WTOperationStateReady:
-//            switch (toState) {
-//                case WTOperationStateExecuting:
-//                    return YES;
-//                case WTOperationStateFinished:
-//                    return isCancelled;
-//                default:
-//                    return NO;
-//            }
-//        case WTOperationStateExecuting:
-//            switch (toState) {
-//                case WTOperationStateFinished:
-//                    return YES;
-//                default:
-//                    return NO;
-//            }
-//        case WTOperationStateFinished:
-//            return NO;
-//        default: {
-//#pragma clang diagnostic push
-//#pragma clang diagnostic ignored "-Wunreachable-code"
-//            switch (toState) {
-//                case WTOperationStateReady:
-//                case WTOperationStateExecuting:
-//                case WTOperationStateFinished:
-//                    return YES;
-//                default:
-//                    return NO;
-//            }
-//        }
-//#pragma clang diagnostic pop
-//    }
-//}
 
 @interface WTOperation ()
 
@@ -137,42 +79,59 @@ NSString * const WTOperationLockName = @"WTOperationLockName";
 - (void)cancel {
     [self.lock lock];
     NSLog(@"---------cancel %@", self);
-    if (self.isCancelled || self.isFinished || self.isExecuting) {
-        [self.lock unlock];
-        return;
+    if (!self.isCancelled && !self.isFinished) {
+        [super cancel];
+        [self KVONotificationWithNotiKey:@"isCancelled" state:&_cancelled stateValue:YES];
+        if (self.isExecuting) {
+            [self runSelector:@selector(cancelUpload)];
+        }
     }
-    [super cancel];
-    [self KVONotificationWithNotiKey:@"isCancelled" state:&_cancelled stateValue:YES];
-    [self finish];
     [self.lock unlock];
 }
 
+- (void)cancelUpload {
+    self.success = nil;
+    self.failure = nil;
+}
+
 - (void)start {
-    if (self.isCancelled || self.isFinished || self.isExecuting) {
-        NSLog(@"start %d %d %d %@", self.isCancelled, self.isFinished, self.isExecuting, self);
+    [self.lock lock];
+    if (self.isCancelled) {
+        [self finish];
+        [self.lock unlock];
+        return;
+    }
+    if (self.isFinished || self.isExecuting) {
+        NSLog(@"start %d %d %d %d %@", self.isCancelled, self.isFinished, self.isExecuting, self.isReady, self);
+        [self.lock unlock];
         return;
     }
     [self runSelector:@selector(startUpload)];
+    [self.lock unlock];
 }
 
 - (void)startUpload {
     if (self.isCancelled || self.isFinished || self.isExecuting) {
         return;
     }
+    [self KVONotificationWithNotiKey:@"isExecuting" state:&_executing stateValue:YES];
     [self uploadFile];
 }
 
 - (void)uploadFile {
-    [self KVONotificationWithNotiKey:@"isExecuting" state:&_executing stateValue:YES];
     NSLog(@"upload start %@", self);
     __weak typeof(self) weakSelf = self;
     [self.uploadManager putFile:self.filePath key:self.key token:self.token complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
-        NSLog(@"---upload------结束 %@", weakSelf);
+//        NSLog(@"---upload------结束 %@", weakSelf);
         if (weakSelf) {
             if (resp == nil) {
-                weakSelf.failure(info.error);
+                if (weakSelf.failure) {
+                    weakSelf.failure(info.error);
+                }
             } else {
-                weakSelf.success();
+                if (weakSelf.success) {
+                    weakSelf.success();
+                }
             }
             [weakSelf finish];
         }
@@ -181,7 +140,9 @@ NSString * const WTOperationLockName = @"WTOperationLockName";
 
 - (void)finish {
     [self.lock lock];
-    [self KVONotificationWithNotiKey:@"isExecuting" state:&_executing stateValue:NO];
+    if (self.isExecuting) {
+        [self KVONotificationWithNotiKey:@"isExecuting" state:&_executing stateValue:NO];
+    }
     [self KVONotificationWithNotiKey:@"isFinished" state:&_finished stateValue:YES];
     NSLog(@"finish %@", self);
     [self.lock unlock];
