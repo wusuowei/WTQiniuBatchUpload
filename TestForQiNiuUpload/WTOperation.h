@@ -11,6 +11,9 @@
 
 @interface WTOperation : NSOperation
 
+@property (nonatomic, copy) NSString *wt_identifier;
+
+
 + (instancetype)operationWithUploadManager:(QNUploadManager *)uploadManager
                                   filePath:(NSString *)filePath
                                   key:(NSString *)key

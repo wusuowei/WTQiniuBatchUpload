@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -15,11 +16,52 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K0C-f6-z3h">
+                                <rect key="frame" x="250" y="70" width="100" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Jlq-W5-VIN"/>
+                                    <constraint firstAttribute="width" constant="100" id="qhm-mu-7Uw"/>
+                                </constraints>
+                                <state key="normal" title="单个文件上传"/>
+                                <connections>
+                                    <action selector="singleFileUpload:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DGT-nb-xh1"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="USA-pY-AM7">
+                                <rect key="frame" x="250" y="130" width="100" height="30"/>
+                                <state key="normal" title="重复添加上传"/>
+                                <connections>
+                                    <action selector="addRepeatFile:" destination="BYZ-38-t0r" eventType="touchUpInside" id="OL8-r8-VV8"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EfB-5H-uNh">
+                                <rect key="frame" x="250.5" y="203" width="100" height="30"/>
+                                <state key="normal" title="多文件上传"/>
+                                <connections>
+                                    <action selector="batchUpload:" destination="BYZ-38-t0r" eventType="touchUpInside" id="twm-y3-M2T"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="K0C-f6-z3h" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="5ec-lc-sIT"/>
+                            <constraint firstItem="EfB-5H-uNh" firstAttribute="top" secondItem="USA-pY-AM7" secondAttribute="bottom" constant="43" id="G1p-Hn-Q9p"/>
+                            <constraint firstItem="EfB-5H-uNh" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="IDg-a5-uQ0"/>
+                            <constraint firstItem="K0C-f6-z3h" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="IQc-dg-w0r"/>
+                            <constraint firstItem="USA-pY-AM7" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="X7I-j6-RqU"/>
+                            <constraint firstItem="USA-pY-AM7" firstAttribute="height" secondItem="K0C-f6-z3h" secondAttribute="height" id="Xzc-G4-exL"/>
+                            <constraint firstItem="EfB-5H-uNh" firstAttribute="width" secondItem="K0C-f6-z3h" secondAttribute="width" id="aHV-NU-j8I"/>
+                            <constraint firstItem="USA-pY-AM7" firstAttribute="width" secondItem="K0C-f6-z3h" secondAttribute="width" id="aXb-TR-eT7"/>
+                            <constraint firstItem="USA-pY-AM7" firstAttribute="top" secondItem="K0C-f6-z3h" secondAttribute="bottom" constant="30" id="bnI-DJ-gTY"/>
+                            <constraint firstItem="K0C-f6-z3h" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="50" id="qe0-wd-Hf8"/>
+                            <constraint firstItem="EfB-5H-uNh" firstAttribute="height" secondItem="K0C-f6-z3h" secondAttribute="height" id="vgr-sY-ChM"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="322" y="210"/>
         </scene>
     </scenes>
 </document>

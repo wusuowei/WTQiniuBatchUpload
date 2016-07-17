@@ -19,6 +19,8 @@
 		C507F77F1D26497E00012C49 /* WTOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C507F77E1D26497E00012C49 /* WTOperation.m */; };
 		C58D04331D12992F00D7681D /* QQhaoyou.png in Resources */ = {isa = PBXBuildFile; fileRef = C58D04321D12992F00D7681D /* QQhaoyou.png */; };
 		C58D04351D129C0800D7681D /* abc.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C58D04341D129C0800D7681D /* abc.jpg */; };
+		C5AFE0A71D3B53E200F2C1F4 /* WTQiniuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C5AFE0A61D3B53E200F2C1F4 /* WTQiniuManager.m */; };
+		C5AFE0AA1D3B588400F2C1F4 /* WTQiniuManagerConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = C5AFE0A91D3B588400F2C1F4 /* WTQiniuManagerConfig.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +63,10 @@
 		C507F77E1D26497E00012C49 /* WTOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WTOperation.m; sourceTree = "<group>"; };
 		C58D04321D12992F00D7681D /* QQhaoyou.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = QQhaoyou.png; sourceTree = "<group>"; };
 		C58D04341D129C0800D7681D /* abc.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = abc.jpg; sourceTree = "<group>"; };
+		C5AFE0A51D3B53E200F2C1F4 /* WTQiniuManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WTQiniuManager.h; sourceTree = "<group>"; };
+		C5AFE0A61D3B53E200F2C1F4 /* WTQiniuManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WTQiniuManager.m; sourceTree = "<group>"; };
+		C5AFE0A81D3B588400F2C1F4 /* WTQiniuManagerConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WTQiniuManagerConfig.h; sourceTree = "<group>"; };
+		C5AFE0A91D3B588400F2C1F4 /* WTQiniuManagerConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WTQiniuManagerConfig.m; sourceTree = "<group>"; };
 		F3859706D7D4314219DBE003 /* Pods-TestForQiNiuUpload.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestForQiNiuUpload.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TestForQiNiuUpload/Pods-TestForQiNiuUpload.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -128,6 +134,10 @@
 				5BC47F681C7C13C600843343 /* AppDelegate.m */,
 				5BC47F6A1C7C13C600843343 /* ViewController.h */,
 				5BC47F6B1C7C13C600843343 /* ViewController.m */,
+				C5AFE0A51D3B53E200F2C1F4 /* WTQiniuManager.h */,
+				C5AFE0A61D3B53E200F2C1F4 /* WTQiniuManager.m */,
+				C5AFE0A81D3B588400F2C1F4 /* WTQiniuManagerConfig.h */,
+				C5AFE0A91D3B588400F2C1F4 /* WTQiniuManagerConfig.m */,
 				C507F77D1D26497E00012C49 /* WTOperation.h */,
 				C507F77E1D26497E00012C49 /* WTOperation.m */,
 				5BC47F6D1C7C13C600843343 /* Main.storyboard */,
@@ -360,6 +370,8 @@
 			files = (
 				C507F77F1D26497E00012C49 /* WTOperation.m in Sources */,
 				5BC47F6C1C7C13C600843343 /* ViewController.m in Sources */,
+				C5AFE0A71D3B53E200F2C1F4 /* WTQiniuManager.m in Sources */,
+				C5AFE0AA1D3B588400F2C1F4 /* WTQiniuManagerConfig.m in Sources */,
 				5BC47F691C7C13C600843343 /* AppDelegate.m in Sources */,
 				5BC47F661C7C13C600843343 /* main.m in Sources */,
 			);

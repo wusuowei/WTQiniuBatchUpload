@@ -8,13 +8,9 @@
 
 #import "ViewController.h"
 #import <QiniuSDK.h>
-#import <AFNetworking.h>
-#import "WTOperation.h"
+#import "WTQiniuManager.h"
 
 @interface ViewController ()
-
-@property (nonatomic, strong) QNUploadManager *uploadManager;
-@property (nonatomic, strong) NSOperationQueue *uploadOperationQueue;
 
 @end
 
@@ -22,43 +18,47 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [self setupQiniuUpload];
 }
 
-- (void)setupQiniuUpload {
-    QNConfiguration *configuration = [QNConfiguration build:^(QNConfigurationBuilder *builder) {
-        builder.timeoutInterval = 10;
-    }];
-    self.uploadManager = [QNUploadManager sharedInstanceWithConfiguration:configuration];
-    self.uploadOperationQueue = [[NSOperationQueue alloc] init];
-    self.uploadOperationQueue.maxConcurrentOperationCount = 3;
+#pragma mark - button action
+- (IBAction)singleFileUpload:(UIButton *)sender {
+    [self uploadWithFilePath:[self filePath] key:@"123456.jpg" token:[self token]];
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    [self qiniuUpload];
-}
-
-#pragma mark - qiniu
-- (void)qiniuUpload {
-    if (self.uploadOperationQueue.operationCount > 0) {
-        [self.uploadOperationQueue cancelAllOperations];
-    }
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"abc" ofType:@"jpg"];
-    NSString *key = @"123456.jpg";
-    NSString *token = [self token];
+- (IBAction)addRepeatFile:(UIButton *)sender {
     for (NSInteger i = 0; i < 100; i++) {
-        WTOperation *operation = [WTOperation operationWithUploadManager:self.uploadManager filePath:path key:key token:token success:^{
-            NSLog(@"---------成功");
-        } failure:^(NSError *error) {
-            NSLog(@"----------失败   %@", error.description);
-        }];
-        [self.uploadOperationQueue addOperation:operation];
+        [self singleFileUpload:nil];
     }
 }
 
+- (IBAction)batchUpload:(UIButton *)sender {
+    NSString *filePath = [self filePath];
+    NSString *token = [self token];
+    NSString *key = nil;
+    for (NSInteger i = 0; i < 100; i++) {
+        @autoreleasepool {
+            key = @(i).stringValue;
+            [self uploadWithFilePath:filePath key:key token:token];
+        }
+    }
+}
+
+#pragma mark - upload 
+- (void)uploadWithFilePath:(NSString *)filePath key:(NSString *)key token:(NSString *)token{
+    [[WTQiniuManager shareManager] uploadWithFilePath:filePath key:key token:token success:^{
+        NSLog(@"---------成功");
+    } failure:^(NSError *error) {
+        NSLog(@"----------失败   %@", error.description);
+    }];
+}
+
+#pragma mark - data
 - (NSString *)token {
     return @"uploadToken";
+}
+
+- (NSString *)filePath {
+    return [[NSBundle mainBundle] pathForResource:@"abc" ofType:@"jpg"];
 }
 
 @end
