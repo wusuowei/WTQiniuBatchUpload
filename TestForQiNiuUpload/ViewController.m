@@ -48,13 +48,13 @@
     [[WTQiniuManager shareManager] uploadWithFilePath:filePath key:key token:token success:^{
         NSLog(@"---------成功");
     } failure:^(NSError *error) {
-        NSLog(@"----------失败   %@", error.description);
+        NSLog(@"----------失败   %@, %zd", key, error.code);
     }];
 }
 
 #pragma mark - data
 - (NSString *)token {
-    return @"uploadToken";
+    return @"iN7NgwM31j4-BZacMjPrOQBs34UG1maYCAQmhdCV:rHBjktZ6m1KkvRZkPn9yNdPDH24=:eyJzY29wZSI6InF0ZXN0YnVja2V0IiwiZGVhZGxpbmUiOjE0Njg3NDI2OTd9";
 }
 
 - (NSString *)filePath {

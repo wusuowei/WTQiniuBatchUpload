@@ -34,6 +34,6 @@
 /**
  *  取消所有文件上传任务
  */
-- (void)cancelAffixUploadOperations;
+- (void)cancelUploadOperations;
 
 @end

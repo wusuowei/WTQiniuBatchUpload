@@ -48,7 +48,7 @@ static WTQiniuManager *_shareManager;
 }
 
 #pragma mark - cancel
-- (void)cancelAffixUploadOperations {
+- (void)cancelUploadOperations {
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
         [weakSelf.uploadQueue cancelAllOperations];
