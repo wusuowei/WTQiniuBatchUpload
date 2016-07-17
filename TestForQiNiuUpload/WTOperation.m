@@ -9,7 +9,7 @@
 #import "WTOperation.h"
 #import <QiniuSDK.h>
 
-NSString * const WTOperationLockName = @"WTOperationLockName";
+static NSString * const WTOperationLockName = @"WTOperationLockName";
 
 @interface WTOperation ()
 
@@ -78,7 +78,6 @@ NSString * const WTOperationLockName = @"WTOperationLockName";
 #pragma mark - operation
 - (void)cancel {
     [self.lock lock];
-    NSLog(@"---------cancel %@", self);
     if (!self.isCancelled && !self.isFinished) {
         [super cancel];
         [self KVONotificationWithNotiKey:@"isCancelled" state:&_cancelled stateValue:YES];
@@ -102,7 +101,6 @@ NSString * const WTOperationLockName = @"WTOperationLockName";
         return;
     }
     if (self.isFinished || self.isExecuting) {
-        NSLog(@"start %d %d %d %d %@", self.isCancelled, self.isFinished, self.isExecuting, self.isReady, self);
         [self.lock unlock];
         return;
     }
@@ -119,10 +117,8 @@ NSString * const WTOperationLockName = @"WTOperationLockName";
 }
 
 - (void)uploadFile {
-    NSLog(@"upload start %@", self);
     __weak typeof(self) weakSelf = self;
     [self.uploadManager putFile:self.filePath key:self.key token:self.token complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
-//        NSLog(@"---upload------结束 %@", weakSelf);
         if (weakSelf) {
             if (resp == nil) {
                 if (weakSelf.failure) {
@@ -144,7 +140,6 @@ NSString * const WTOperationLockName = @"WTOperationLockName";
         [self KVONotificationWithNotiKey:@"isExecuting" state:&_executing stateValue:NO];
     }
     [self KVONotificationWithNotiKey:@"isFinished" state:&_finished stateValue:YES];
-    NSLog(@"finish %@", self);
     [self.lock unlock];
 }
 
